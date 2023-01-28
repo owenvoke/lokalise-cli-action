@@ -1,0 +1,39 @@
+name: 'Lokalise CLI'
+description: 'Run commands using the Lokalise CLI'
+
+inputs:
+  command:
+    description: 'The command to run (excluding the `lokalise2` binary)'
+    required: true
+    default: ''
+  config:
+    description: 'The path to a config file'
+    required: false
+    default: ''
+  token:
+    description: 'A Lokalise API token'
+    required: true
+  version:
+    description: 'The version of Lokalise CLI to use (defaults to the latest)'
+    required: false
+
+runs:
+  using: composite
+  steps:
+
+    - name: Install Lokalise2 CLI
+      shell: bash
+      run: |
+        if [[ ! -f "${GITHUB_ACTION_PATH:?}/bin/.installed" || "$(cat "${GITHUB_ACTION_PATH:?}/bin/.installed")" != "${{ inputs.version }}" ]]; then
+          "${GITHUB_ACTION_PATH:?}/bin/install.sh" -d -b "${GITHUB_ACTION_PATH:?}/bin" "${{ inputs.version }}"
+          echo -n "${{ inputs.version }}" > "${GITHUB_ACTION_PATH:?}/bin/.installed"
+        fi
+
+    - name: Run Lokalise2 CLI command
+      shell: bash
+      run: |
+        "${GITHUB_ACTION_PATH:?}/bin/lokalise2" --token '${{ inputs.token }}' --config '${{ inputs.config }}' ${{ inputs.command }}
+
+branding:
+  icon: 'globe'
+  color: 'green'
