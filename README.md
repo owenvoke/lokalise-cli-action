@@ -12,7 +12,7 @@ This action can be used in your workflows with the following syntax:
 
 ```yaml
 - name: Lokalise
-  uses: owenvoke/lokalise-cli-action
+  uses: owenvoke/lokalise-cli-action@v1
   with:
   # ...
 ```
